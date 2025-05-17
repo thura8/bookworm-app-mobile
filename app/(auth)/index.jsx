@@ -9,6 +9,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -21,14 +22,19 @@ import styles from "../../assets/styles/login.styles";
 
 // Constants
 import COLORS from "../../constants/colors";
+import { useAuthStore } from "../../store/authStore";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {};
+  const { user, login, isLoading } = useAuthStore();
+
+  const handleLogin = async () => {
+    const result = await login(email, password);
+    if (!result.success) Alert.alert("Error", result.message);
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
