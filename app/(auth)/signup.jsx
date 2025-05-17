@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -20,17 +21,23 @@ import styles from "../../assets/styles/signup.styles";
 
 //Constants
 import COLORS from "../../constants/colors";
+import { useAuthStore } from "../../store/authStore";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { user, isLoading, register, token } = useAuthStore();
 
   const router = useRouter();
 
-  const handleSignup = () => {};
+  const handleSignUp = async () => {
+    const result = await register(username, email, password);
+
+    if (!result.success) Alert.alert("Error", result.message);
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -59,7 +66,7 @@ export default function Signup() {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Enter your email"
+                    placeholder="johndoe"
                     placeholderTextColor={COLORS.placeholderText}
                     value={username}
                     onChangeText={setUsername}
@@ -127,7 +134,7 @@ export default function Signup() {
               {/* SIGNUP BUTTON */}
               <TouchableOpacity
                 style={styles.button}
-                onPress={handleSignup}
+                onPress={handleSignUp}
                 disabled={isLoading}
               >
                 {isLoading ? (
