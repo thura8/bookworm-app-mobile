@@ -3,15 +3,16 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
 import SafeScreen from "@/components/SafeScreen";
-
 import { useAuthStore } from "@/store/authStore";
 import { useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Text } from "react-native";
+import { useLoadFonts } from "@/hooks/useLoadFonts";
 
 export default function RootLayout() {
+  const fontsLoaded = useLoadFonts(); // ⬅️ Load fonts
+
   const router = useRouter();
   const segments = useSegments();
-
   const { user, token, checkAuth, isAuthChecked } = useAuthStore();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export default function RootLayout() {
     else if (isSignedIn && inAuthScreen) router.replace("/(tabs)");
   }, [user, token, segments, isAuthChecked]);
 
-  if (!isAuthChecked) {
+  if (!isAuthChecked || !fontsLoaded) {
     return (
       <SafeAreaProvider>
         <SafeScreen>
